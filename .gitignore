@@ -2,7 +2,9 @@
 /.ipynb_checkpoints
 /sample_statement_data.parquet
 /test.py
-venv/
-.env
 venv311/
 .env
+.DS_Store
+.ipynb_checkpoints/
+__pycache__/
+*.pyc
