@@ -9,3 +9,4 @@ venv311/
 __pycache__/
 *.pyc
 Framework/lib/__pycache__/checks.cpython-311.pyc
+Framework/test.yaml
