@@ -1,0 +1,24 @@
+[myconnection]
+account = "IBTRGDB-JG13022"
+user = "FAIZOORRAHMAN"
+password = "Mandapatharam@13"
+warehouse = "COMPUTE_WH"
+database = "BROADBAND_USAGE"
+schema = "BROADBAND_USAGE.SILVER"
+
+
+#New one 
+[connections.my_example_connection]
+account = "GUFIDHQ-MVC94158"
+user = "FAIZOORRAHMAN"
+authenticator = "externalbrowser"
+role = "ACCOUNTADMIN"
+warehouse = "COMPUTE_WH"
+database = "TESTING"
+schema = "TEST"
+
+export SNOWFLAKE_ACCOUNT="GUFIDHQ-MVC94158"
+export SNOWFLAKE_USER="FAIZOORRAHMAN"
+export SNOWFLAKE_PASSWORD="Mandapatharam@13"
+export SNOWFLAKE_ROLE="ACCOUNTADMIN"
+export SNOWFLAKE_WAREHOUSE="COMPUTE_WH"

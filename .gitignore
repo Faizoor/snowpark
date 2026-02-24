@@ -1,0 +1,4 @@
+/.DS_Store
+/.ipynb_checkpoints
+/sample_statement_data.parquet
+/test.py

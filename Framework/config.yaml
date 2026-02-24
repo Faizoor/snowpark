@@ -1,0 +1,83 @@
+# ══════════════════════════════════════════════════════════════════════
+# Testing Framework Configuration for Maximo Application
+# ══════════════════════════════════════════════════════════════════════
+application: Maximo
+database   : UDX_CORE        
+schema     : Conform 
+
+#------------------------------Test Rules---------------------------------
+
+rules:
+  sanity:
+  - rule_id     : S01
+    name        : "Collection Table Exists"
+    rule_type   : table_exists
+    object      : UDX_CORE.STAGE.STG_UOR_GALAXY_GENERATED_STATEMENTS
+    object_type : table
+
+  - rule_id     : S02
+    name        : "Error Table Exists"
+    rule_type   : table_exists
+    object      : UDX_CORE.ERR.UOR_GALAXY_GENERATED_STATEMENTS_ERROR
+    object_type : table
+
+  - rule_id     : S03
+    name        : "Conform Table Exists"
+    rule_type   : table_exists
+    object      : UDX_CORE.CONFORM.GENERATED_STATEMENTS
+    object_type : table
+
+#----------can do later----------------
+  - rule_id     : S03
+    name        : "Source Stage Table Exists"
+    rule_type   : stage_exists
+    object      : UDX_CORE.STAGE.SOURCE_FILE_STG
+    object_type : stage
+
+  - rule_id     : S04
+    name        : "Collection Table structure Validation"
+    rule_type   : table_structure_validation
+    object      : UDX_CORE.STAGE.STG_UOR_GALAXY_GENERATED_STATEMENTS
+    object_type : table
+    expected_schema : <should point to STT document>
+
+  - rule_id     : S05
+    name        : "Conform Table structure Validation"
+    rule_type   : table_structure_validation
+    object      : UDX_CORE.CONFORM.GENERATED_STATEMENTS
+    object_type : table
+    expected_schema : <should point to STT document>
+
+
+  functional:
+  - rule_id     : F01
+    name        : "Null check on key fields"
+    rule_type   : null_check
+    object      : 
+      - name    : UDX_CORE.STAGE.STG_UOR_GALAXY_GENERATED_STATEMENTS
+        columns : [object_id, source_id]
+
+      - name    : UDX_CORE.CONFORM.GENERATED_STATEMENTS
+        columns : [object_id, source_id]
+    object_type : table
+
+      
+  - rule_id     : F02
+    name        : "Duplicate Check"
+    rule_type   : duplicate_check
+    object      :
+      - name    : UDX_CORE.STAGE.STG_UOR_GALAXY_GENERATED_STATEMENTS
+        columns : [object_id, source_id]
+
+      - name    : UDX_CORE.CONFORM.GENERATED_STATEMENTS
+        columns : [object_id, source_id]
+    object_type : table
+
+
+#rules
+ # rule id 
+ # rule type - function
+ # object - complete table name
+ # object type   - table, stage, schema 
+ # test_type - sanity | functional
+        
