@@ -7,8 +7,9 @@ schema     : Conform
 
 #------------------------------Test Rules---------------------------------
 
-rules:
-  sanity:
+
+sanity_checks:
+  rules:
   - rule_id     : S01
     name        : "Collection Table Exists"
     rule_type   : table_exists
@@ -49,7 +50,8 @@ rules:
     expected_schema : <should point to STT document>
 
 
-  functional:
+functional_checks:
+  rules:
   - rule_id     : F01
     name        : "Null check on key fields"
     rule_type   : null_check
@@ -61,7 +63,7 @@ rules:
         columns : [object_id, source_id]
     object_type : table
 
-      
+        
   - rule_id     : F02
     name        : "Duplicate Check"
     rule_type   : duplicate_check

@@ -9,9 +9,6 @@ import logging
 from lib import checks
 
 
-
-
-
 class SnowparkTesting():
     """ 
             Description about the class
@@ -39,10 +36,12 @@ class SnowparkTesting():
         """
 
         #Run sanity checks
+        #for checks in self.config.get("checks")['sanity_checks']:
+        #    print(checks)
         self.sanity_checks()
 
         #Data Quality checks
-        tables = self.config.get("tables")
+        tables = self.config.get("rules")
 
         for tables in tables:
             table_name=tables.get("name")
@@ -62,22 +61,26 @@ class SnowparkTesting():
         
         """
         sanity_conf=self.config.get("sanity_checks")
-        
+
         if not sanity_conf:
             return f"No sanity checks to perform"
         print(f"Running sanity checks")
-        #print(sanity_conf)
+        print(sanity_conf)
         for rule in sanity_conf.get('rules'):
-            print(rule)
-            check_name = rule.get('check')
-            stages = rule.get('name') 
-            severity=rule.get('severity',"FAIL")
+            rule_id = rule.get('rule_id')
+            name = rule.get('name') 
+            rule_type=rule.get('rule_type')
+            object_name=rule.get('object')
+            object_type = rule.get('object_type')
 
-            print(check_name)
-            print(severity)
-            print(stages)
+            print(rule_id)
+            print(name)
+            print(object_name)
+            print(rule_type)
 
-            if check_name not in checks.sanity_registry:
+            print(object_type)
+
+            if rule_type not in checks.sanity_registry:
                 raise ValueError(f"Unsupported sanity check")
             #print(checks.sanity_registry['stage_exists'])
             check_function = checks.sanity_registry[check_name]
@@ -106,7 +109,7 @@ class SnowparkTesting():
 
 if __name__ == "__main__":
     load_dotenv()
-    yaml_path = "Framework/test.yaml"
+    yaml_path = "Framework/config.yaml"
 
     connection_parameters = {
     "account": os.environ["SNOWFLAKE_ACCOUNT"],
