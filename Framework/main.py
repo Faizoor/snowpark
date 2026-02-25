@@ -9,7 +9,7 @@ import logging
 from lib import checks
 
 
-class SnowparkTesting():
+class SnowparkValidationRunner():
     """ 
             Description about the class
     """
@@ -43,15 +43,15 @@ class SnowparkTesting():
         #Data Quality checks
         tables = self.config.get("rules")
 
-        for tables in tables:
-            table_name=tables.get("name")
-            enabled=tables.get("enabled",True)
-            if not enabled:
-                print(f"DQ check is not enabled for this table: , {self._build_table_name(table_name)}")
-                continue
+        #for table in tables:
+        #    table_name=tables.get("name")
+        #    enabled=tables.get("enabled",True)
+        #    if not enabled:
+        #        print(f"DQ check is not enabled for this table: , {self._build_table_name(table_name)}")
+        #        continue
 
-            qualified_table_name = self._build_table_name(table_name)
-            print(f"running checks for the table")
+        #    qualified_table_name = self._build_table_name(table_name)
+        #    print(f"running checks for the table")
 
 
     def sanity_checks(self):
@@ -61,6 +61,8 @@ class SnowparkTesting():
         
         """
         sanity_conf=self.config.get("sanity_checks")
+
+        sanity_results=[]
 
         if not sanity_conf:
             return f"No sanity checks to perform"
@@ -73,6 +75,9 @@ class SnowparkTesting():
             object_name=rule.get('object')
             object_type = rule.get('object_type')
 
+            error_message=None
+            status=None
+
             print(rule_id)
             print(name)
             print(object_name)
@@ -83,16 +88,35 @@ class SnowparkTesting():
             if rule_type not in checks.sanity_registry:
                 raise ValueError(f"Unsupported sanity check")
             #print(checks.sanity_registry['stage_exists'])
-            check_function = checks.sanity_registry[check_name]
+            check_function = checks.sanity_registry[rule_type]
+            try:
+                sql = check_function(object_name)
+                print(sql)
 
-            genereated_sql = check_function(self.database,self.schema,stages)
+                result = self.session.sql(sql).collect()
+                print(result)
+                
+                value = result[0]['RESULT']
+                status="PASS" if value>0 else "FAIL"
+            except Exception as e:  
+                status = "ERROR"
+                error_message=str(e)
 
-            print(genereated_sql)
-
+            sanity_results.append(
+                    {
+                        "rule_id":rule_id,
+                        "name"   :name,
+                        "object" :object_name,
+                        "rule_type":rule_type,
+                        "status" : status,
+                        "error_message":error_message
+                    }
+                )
+        return sanity_results
 
                 
     def _build_table_name(self,table_name):
-        return f"{self.database.lower}.{self.schema.lower}.{table_name.lower()}"
+        return f"{self.database.upper()}.{self.schema.upper()}.{table_name.upper()}"
     
     def config_loader(self):
         """
@@ -123,7 +147,7 @@ if __name__ == "__main__":
         session = Session.builder.configs(connection_parameters).create()
     
     #create Framework Object 
-        snowpark_testing = SnowparkTesting( session, yaml_path  )
+        snowpark_testing = SnowparkValidationRunner( session, yaml_path  )
         results=snowpark_testing.execute()
         #print(f"results: {results}")
 
