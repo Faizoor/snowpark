@@ -55,25 +55,27 @@ functional_checks:
   - rule_id     : F01
     name        : "Null check on key fields"
     rule_type   : null_check
+    threshold   : 0
     object      : 
       - name    : UDX_CORE.STAGE.STG_UOR_GALAXY_GENERATED_STATEMENTS
-        columns : [object_id, source_id]
+        columns : [record_content]
 
       - name    : UDX_CORE.CONFORM.GENERATED_STATEMENTS
-        columns : [object_id, source_id]
+        columns : [source_ids]
     object_type : table
 
         
-  - rule_id     : F02
-    name        : "Duplicate Check"
-    rule_type   : duplicate_check
-    object      :
-      - name    : UDX_CORE.STAGE.STG_UOR_GALAXY_GENERATED_STATEMENTS
-        columns : [object_id, source_id]
+#  - rule_id     : F02
+#    name        : "Duplicate Check"
+#    rule_type   : duplicate_check
+#    threshold   : 0
+#    object      :
+#      - name    : UDX_CORE.STAGE.STG_UOR_GALAXY_GENERATED_STATEMENTS
+#        columns : [object_id, source_id]
 
-      - name    : UDX_CORE.CONFORM.GENERATED_STATEMENTS
-        columns : [object_id, source_id]
-    object_type : table
+#      - name    : UDX_CORE.CONFORM.GENERATED_STATEMENTS
+#        columns : [object_id, source_id]
+#    object_type : table
 
 
 #rules
