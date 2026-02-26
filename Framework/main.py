@@ -157,8 +157,8 @@ class SnowparkValidationRunner():
                 raise ValueError(f"Unsupported sanity check")
 
             check_function = checks.sanity_registry[rule_type]
-            try:
-                for obj in object:
+            for obj in object:
+                try:
                     object_name=obj.get('name')
                     columns=obj.get('columns')
 
@@ -191,20 +191,20 @@ class SnowparkValidationRunner():
                             "error_message": None}
                     )
 
-            except Exception as e:  
-                status = "ERROR"
-                error_message=getattr(e, 'message', str(e))
-                logger.error(f"Error executing functional check with {rule_id} on object - {object_name} due to this error: {error_message}")
-                functional_results.append(
-                        {
-                            "rule_id": rule_id,
-                            "name": name,
-                            "object": object_name,
-                            "rule_type": rule_type,
-                            "status": status,
-                            "object_type":object_type,
-                            "error_message": error_message}
-                    )
+                except Exception as e:  
+                    status = "ERROR"
+                    error_message=getattr(e, 'message', str(e))
+                    logger.error(f"Error executing functional check with {rule_id} on object - {object_name} due to this error: {error_message}")
+                    functional_results.append(
+                            {
+                                "rule_id": rule_id,
+                                "name": name,
+                                "object": object_name,
+                                "rule_type": rule_type,
+                                "status": status,
+                                "object_type":object_type,
+                                "error_message": error_message}
+                        )
         return functional_results
 
     def _get_summary(self,results):

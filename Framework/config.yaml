@@ -57,7 +57,7 @@ functional_checks:
     rule_type   : null_check
     threshold   : 0
     object      : 
-      - name    : UDX_CORE.STAGE.STG_UOR_GALAXY_GENERATED_STATEMENTS
+      - name    : UUDX_CORE.STAGE.STG_UOR_GALAXY_GENERATED_STATEMENTS
         columns : [record_content]
 
       - name    : UDX_CORE.CONFORMS.GENERATED_STATEMENTS
