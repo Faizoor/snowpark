@@ -72,7 +72,6 @@ class SnowparkValidationRunner():
 
         """
         Execute sanity checks 
-        
         """
         sanity_conf=self.config.get("sanity_checks")
 
@@ -81,7 +80,6 @@ class SnowparkValidationRunner():
         if not sanity_conf:
             return f"No sanity checks to perform"
         logger.info(f"Running sanity checks")
-        #logger.info(sanity_conf)
         for rule in sanity_conf.get('rules'):
             rule_id = rule.get('rule_id')
             name = rule.get('name') 
@@ -92,26 +90,22 @@ class SnowparkValidationRunner():
             error_message=None
             status=None
 
-            #logger.info("rule_id: %s", rule_id)
-            #logger.info("name: %s", name)
-            #logger.info("object_name: %s", object_name)
-            #logger.info("rule_type: %s", rule_type)
-            #logger.info(object_type)
-
             logger.info(f"Executing sanity check: rule_id - {rule_id} - on object: {object_name} with rule type: {rule_type}")  
 
             if rule_type not in checks.sanity_registry:
                 raise ValueError(f"Unsupported sanity check")
-            #logger.info(checks.sanity_registry['stage_exists'])
             check_function = checks.sanity_registry[rule_type]
             try:
-                sql = check_function(object_name)
-                #logger.info(sql)
+                """ SQL execution"""
+                #sql = check_function(object_name)
+                #result = self.session.sql(sql).collect()               
+                #value = result[0]['RESULT']
 
-                result = self.session.sql(sql).collect()
-                #logger.info(result)
-                
-                value = result[0]['RESULT']
+                """snowpark execution"""
+                df=check_function(object_name,self.session)
+                value=df.count()
+                logger.info(f"value:{value}")
+
                 status="PASS" if value>0 else "FAIL"
                 if status=="PASS":
                     logger.info(f"Sanity check: rule_id - {rule_id} - on object: {object_name} with rule type: {rule_type} has PASSED")
@@ -129,6 +123,7 @@ class SnowparkValidationRunner():
                         "object" :object_name,
                         "rule_type":rule_type,
                         "status" : status,
+                        "object_type":object_type,
                         "error_message":error_message
                     }
                 )
@@ -138,13 +133,9 @@ class SnowparkValidationRunner():
         """
         Execute functional checks for DQ validations
         """
-
         functional_conf=self.config.get("functional_checks")
 
         functional_results=[]
-
-        error_message=None
-        status=None
 
         if not functional_conf:
             return f"No functional checks to perform"
@@ -157,13 +148,11 @@ class SnowparkValidationRunner():
             rule_type=rule.get('rule_type')
             object=rule.get('object')
             threshold=rule.get('threshold')
+            object_type=rule.get('object_type')
 
-            #logger.info(f"rule_id: {rule_id}")
-            #logger.info(f"name: {name}")
-            #logger.info(f"rule_type: {rule_type}")
-            #logger.info(f"object: {object}")
+            error_message=None
+            status=None
 
-            print("Hi")
             if rule_type not in checks.sanity_registry:
                 raise ValueError(f"Unsupported sanity check")
 
@@ -172,16 +161,18 @@ class SnowparkValidationRunner():
                 for obj in object:
                     object_name=obj.get('name')
                     columns=obj.get('columns')
-                    #print(obj['name'])
-                    #logger.info(f"object_name: {object_name}")
-                    #logger.info(f"columns: {columns}")
 
-                    #print(check_function.__name__)
-                    #print(checks.null_check(object_name,columns))
-                    sql = check_function(object_name,columns)
+                    """SQL Execution"""
+                    #sql = check_function(object_name,columns)
                     #logger.info(sql)
-                    result = self.session.sql(sql).collect()
-                    value = result[0]['RESULT']
+                    #result = self.session.sql(sql).collect()
+                    #value = result[0]['RESULT']
+
+                    """Snowpark Excution"""
+                    df=check_function(object_name,columns,session)
+                    value=df.count()
+                    logger.info(f"value: {value}")
+
 
                     status = "PASS" if value==threshold else "FAIL"
                     if status=="PASS":
@@ -196,13 +187,14 @@ class SnowparkValidationRunner():
                             "object": object_name,
                             "rule_type": rule_type,
                             "status": status,
+                            "object_type":object_type,
                             "error_message": None}
                     )
 
             except Exception as e:  
                 status = "ERROR"
                 error_message=getattr(e, 'message', str(e))
-                logger.error(f"Error executing functional check with {rule_id} on object - {object_name}: {error_message}")
+                logger.error(f"Error executing functional check with {rule_id} on object - {object_name} due to this error: {error_message}")
                 functional_results.append(
                         {
                             "rule_id": rule_id,
@@ -210,6 +202,7 @@ class SnowparkValidationRunner():
                             "object": object_name,
                             "rule_type": rule_type,
                             "status": status,
+                            "object_type":object_type,
                             "error_message": error_message}
                     )
         return functional_results

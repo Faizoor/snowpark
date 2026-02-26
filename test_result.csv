@@ -1,8 +1,8 @@
-category,rule_id,name,object,rule_type,status,error_message
-sanity,S01,Collection Table Exists,UUDX_CORE.STAGE.TABLE_THAT_DOES_NOT_EXIST,table_exists,ERROR,"002003 (02000): SQL compilation error:
+category,rule_id,name,object,rule_type,status,object_type,error_message
+sanity,S01,Collection Table Exists,UUDX_CORE.STAGE.TABLE_THAT_DOES_NOT_EXIST,table_exists,ERROR,table,"(1304): 01c2ac1a-0000-cd8b-0016-67fb000f704a: 002003 (02000): SQL compilation error:
 Database 'UUDX_CORE' does not exist or not authorized."
-sanity,S02,Error Table Exists,UDX_CORE.ERR.UOR_GALAXY_GENERATED_STATEMENTS_ERROR,table_exists,PASS,
-sanity,S03,Conform Table Exists,UDX_CORE.CONFORM.GENERATED_STATEMENTS,table_exists,PASS,
-Functional,F01,Null check on key fields,UDX_CORE.STAGE.STG_UOR_GALAXY_GENERATED_STATEMENTS,null_check,FAIL,
-Functional,F01,Null check on key fields,UDX_CORE.CONFORM.GENERATED_STATEMENTS,null_check,ERROR,"000904 (42000): SQL compilation error: error line 3 at position 26
-invalid identifier 'SOURCE_IDS'"
+sanity,S02,Error Table Exists,UDX_CORE.ERR.UOR_GALAXY_GENERATED_STATEMENTS_ERROR,table_exists,PASS,table,
+sanity,S03,Conform Table Exists,UDX_CORE.CONFORM.GENERATED_STATEMENTS,table_exists,PASS,table,
+Functional,F01,Null check on key fields,UDX_CORE.STAGE.STG_UOR_GALAXY_GENERATED_STATEMENTS,null_check,FAIL,table,
+Functional,F01,Null check on key fields,UDX_CORE.CONFORMS.GENERATED_STATEMENTS,null_check,ERROR,table,"(1304): 01c2ac1b-0000-cade-0016-67fb000f306a: 002003 (02000): SQL compilation error:
+Schema 'UDX_CORE.CONFORMS' does not exist or not authorized."
