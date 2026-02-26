@@ -60,8 +60,8 @@ functional_checks:
       - name    : UDX_CORE.STAGE.STG_UOR_GALAXY_GENERATED_STATEMENTS
         columns : [record_content]
 
-      - name    : UDX_CORE.CONFORM.GENERATED_STATEMENTS
-        columns : [source_ids]
+      - name    : UDX_CORE.CONFORMS.GENERATED_STATEMENTS
+        columns : [source_id]
     object_type : table
 
         
