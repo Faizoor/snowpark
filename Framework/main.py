@@ -169,7 +169,7 @@ class SnowparkValidationRunner():
                     #value = result[0]['RESULT']
 
                     """Snowpark Excution"""
-                    df=check_function(object_name,columns,session)
+                    df=check_function(object_name,columns,self.session)
                     value=df.count()
                     logger.info(f"value: {value}")
 
